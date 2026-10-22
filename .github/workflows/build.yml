@@ -53,6 +53,7 @@ jobs:
           rm installbuilder.run
       - name: Register License
         id: register-license
+        if: ${{ secrets.INSTALLBUILDER_LICENSE != '' }}
         env:
           LICENSE_TEXT: ${{ secrets.INSTALLBUILDER_LICENSE }}
         run: |
@@ -83,6 +84,8 @@ jobs:
           done <<< "${{ matrix.extra_binaries }}"
       - name: Build
         id: build
+        env:
+          BR_LICENSE_NOFORCE: "1"
         run: |
           set -euo pipefail
           cd src
