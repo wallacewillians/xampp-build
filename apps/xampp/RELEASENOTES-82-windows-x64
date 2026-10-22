@@ -1,5 +1,16 @@
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+[2026-10-22] XAMPP for Windows 8.2.35-0
+This version of XAMPP contains the following software releases:
+   - Apache 2.4.65
+   - MariaDB 10.11.16
+   - OpenSSL 3.5.3
+   - PHP 8.2.35
+   - phpMyAdmin 5.2.3
+   - Tomcat 8.5.99
+   - curl 8.19.0
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
 [2023-11-19] XAMPP for Windows 8.2.12-0
 This version of XAMPP contains the following software releases:
    - Apache 2.4.58
