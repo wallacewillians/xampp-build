@@ -53,12 +53,15 @@ jobs:
           rm installbuilder.run
       - name: Register License
         id: register-license
-        if: ${{ secrets.INSTALLBUILDER_LICENSE != '' }}
         env:
           LICENSE_TEXT: ${{ secrets.INSTALLBUILDER_LICENSE }}
         run: |
-          echo "$LICENSE_TEXT" > /opt/installbuilder/license.xml
-          /opt/installbuilder/bin/builder check-license
+          if [ -n "$LICENSE_TEXT" ]; then
+            echo "$LICENSE_TEXT" > /opt/installbuilder/license.xml
+            /opt/installbuilder/bin/builder check-license
+          else
+            echo "No INSTALLBUILDER_LICENSE secret found. Skipping license registration."
+          fi
       - name: Get tarballs
         id: get-tarballs
         if: steps.cache-tarballs.outputs.cache-hit != 'true'
