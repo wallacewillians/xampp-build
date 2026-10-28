@@ -53,16 +53,37 @@ The installers will be accessible at `/opt/installbuilder/output/`.
 
 In addition to full installer executables, the build pipeline generates lightweight **PHP Upgrade Packs** (`xampp-php<version>-upgrade-pack.zip`, ~35 MB). These allow updating PHP without reinstalling XAMPP, preserving databases, virtual hosts, and existing configurations:
 
-1. Download `xampp-php<version>-upgrade-pack.zip` from the workflow artifacts or releases.
-2. Extract the zip file.
-3. Right-click `instalar.bat` and select **"Run as Administrator"** (or run `.\instalar.ps1` in PowerShell).
-4. The script will automatically stop Apache, back up your current `C:\xampp\php` directory, install the updated PHP binaries, sync shared DLLs to `C:\xampp\apache\bin`, and restart Apache.
+### Option A: Using the 1-Click Upgrade Pack (Recommended)
 
-Alternatively, you can run the standalone updater script directly:
+1. Download the artifact from GitHub Actions and extract `xampp-php<version>-upgrade-pack.zip`.
+2. Right-click **`instalar.bat`** and select **"Run as Administrator"** (or run `.\instalar.ps1` in an elevated PowerShell).
+   - If your XAMPP is installed in a custom location (e.g. `D:\xampp`), pass the path:
+     ```cmd
+     instalar.bat D:\xampp
+     ```
+3. The script will automatically:
+   - Stop running Apache processes (`httpd.exe`).
+   - Create a timestamped safety backup of your current PHP directory (e.g. `C:\xampp\php_backup_YYYYMMDD_HHMMSS`).
+   - Install the updated PHP binaries with a pre-configured `php.ini` tailored for XAMPP.
+   - Synchronize shared runtime libraries (`icu*.dll`, `lib*.dll`, etc.) to `C:\xampp\apache\bin`.
+   - Update `httpd-xampp.conf` directives if upgrading from legacy PHP 7.
+   - Restart Apache and validate the active version (`php -v`).
+
+### Option B: Using the Standalone PowerShell Script
+
+You can also run the standalone updater script directly from this repository:
 ```powershell
 # From an elevated PowerShell prompt:
-.\tools\upgrade-xampp-php.ps1 -PhpVersion "8.3.36"
+.\tools\upgrade-xampp-php.ps1 -PhpVersion "8.3.36" -XamppPath "C:\xampp"
 ```
+
+### Rollback (If Needed)
+
+If you ever need to revert to your previous PHP version:
+1. Stop Apache in the XAMPP Control Panel.
+2. Rename `C:\xampp\php` to `C:\xampp\php_failed`.
+3. Rename your backup folder (`C:\xampp\php_backup_<timestamp>`) back to `C:\xampp\php`.
+4. Start Apache.
 
 ## License
 
