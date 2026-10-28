@@ -49,6 +49,21 @@ tclkit createstack.tcl pack xamppinstaller80stack windows-x64
 
 The installers will be accessible at `/opt/installbuilder/output/`.
 
+## Upgrading PHP on Existing XAMPP Installations
+
+In addition to full installer executables, the build pipeline generates lightweight **PHP Upgrade Packs** (`xampp-php<version>-upgrade-pack.zip`, ~35 MB). These allow updating PHP without reinstalling XAMPP, preserving databases, virtual hosts, and existing configurations:
+
+1. Download `xampp-php<version>-upgrade-pack.zip` from the workflow artifacts or releases.
+2. Extract the zip file.
+3. Right-click `instalar.bat` and select **"Run as Administrator"** (or run `.\instalar.ps1` in PowerShell).
+4. The script will automatically stop Apache, back up your current `C:\xampp\php` directory, install the updated PHP binaries, sync shared DLLs to `C:\xampp\apache\bin`, and restart Apache.
+
+Alternatively, you can run the standalone updater script directly:
+```powershell
+# From an elevated PowerShell prompt:
+.\tools\upgrade-xampp-php.ps1 -PhpVersion "8.3.36"
+```
+
 ## License
 
 

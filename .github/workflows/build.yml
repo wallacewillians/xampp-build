@@ -97,8 +97,13 @@ jobs:
           set -euo pipefail
           cd src
           tclkit createstack.tcl pack xamppinstaller${{matrix.version}}stack ${{matrix.os}}
-          mkdir /bitnami/dist-${{matrix.version}}-${{matrix.os}}
+          mkdir -p /bitnami/dist-${{matrix.version}}-${{matrix.os}}
           mv /opt/installbuilder/output/* /bitnami/dist-${{matrix.version}}-${{matrix.os}}
+      - name: Build PHP Upgrade Pack
+        id: build-upgrade-pack
+        run: |
+          chmod +x scripts/build-upgrade-pack.sh
+          bash scripts/build-upgrade-pack.sh "${{matrix.version}}" "${{matrix.os}}"
       - name: Archive production artifacts
         uses: actions/upload-artifact@v7
         with:
