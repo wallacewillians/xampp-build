@@ -41,14 +41,14 @@ jobs:
         id: install-tclkit
         run: |
           set -euo pipefail
-          curl --fail --show-error --silent -L -o tclkit 'https://tclkits.rkeene.org/fossil/raw/tclkit-8.5.17-rhel5-x86_64?name=76a197fe41359daaf4f90a2001f46675b3667e26'
+          curl --fail --show-error --silent --retry 5 --retry-delay 3 --retry-all-errors --retry-connrefused --http1.1 -L -o tclkit 'https://tclkits.rkeene.org/fossil/raw/tclkit-8.5.17-rhel5-x86_64?name=76a197fe41359daaf4f90a2001f46675b3667e26'
           chmod 755 tclkit
           sudo mv tclkit /usr/local/bin
       - name: Install InstallBuilder
         id: install-ib
         run: |
           set -euo pipefail
-          curl --fail --show-error --silent -L -o installbuilder.run "https://releases.installbuilder.com/installbuilder/installbuilder-professional-${{ env.IB_VERSION }}-linux-x64-installer.run"
+          curl --fail --show-error --silent --retry 5 --retry-delay 3 --retry-all-errors --retry-connrefused -L -o installbuilder.run "https://releases.installbuilder.com/installbuilder/installbuilder-professional-${{ env.IB_VERSION }}-linux-x64-installer.run"
           chmod 755 installbuilder.run
           sudo ./installbuilder.run --mode unattended --prefix /opt/installbuilder
           sudo chown -R "$USER:$USER" /opt/installbuilder
@@ -71,10 +71,10 @@ jobs:
         if: steps.cache-tarballs.outputs.cache-hit != 'true'
         run: |
           set -euo pipefail
-          mkdir /tmp/tarballs
+          mkdir -p /tmp/tarballs
           cd /tmp/tarballs/
           echo "Downloading base tarball..."
-          curl --fail --show-error --silent --retry 3 -L \
+          curl --fail --show-error --silent --retry 5 --retry-delay 3 --retry-all-errors --retry-connrefused -L \
             -O '${{ matrix.base_tarball }}'
           BASE_FILE=$(basename '${{ matrix.base_tarball }}')
           echo "${{ matrix.base_tarball_sha256 }}  $BASE_FILE" | sha256sum -c -
@@ -86,15 +86,15 @@ jobs:
           while read -r url sha; do
             [ -z "$url" ] && continue
             echo "  -> $url"
-            if ! curl --fail --show-error --silent --retry 3 -L -O "$url"; then
+            if ! curl --fail --show-error --silent --retry 5 --retry-delay 3 --retry-all-errors --retry-connrefused -L -O "$url"; then
               if [[ "$url" == *"windows.php.net"* && "$url" != *"archives"* ]]; then
                 alt_url="${url/downloads\/releases\//downloads\/releases\/archives\/}"
                 echo "     Tentando em archives: $alt_url"
-                curl --fail --show-error --silent --retry 3 -L -O "$alt_url"
+                curl --fail --show-error --silent --retry 5 --retry-delay 3 --retry-all-errors --retry-connrefused -L -O "$alt_url"
               elif [[ "$url" == *"windows.php.net"* && "$url" == *"archives"* ]]; then
                 alt_url="${url/downloads\/releases\/archives\//downloads\/releases\/}"
                 echo "     Tentando em releases: $alt_url"
-                curl --fail --show-error --silent --retry 3 -L -O "$alt_url"
+                curl --fail --show-error --silent --retry 5 --retry-delay 3 --retry-all-errors --retry-connrefused -L -O "$alt_url"
               else
                 exit 1
               fi
